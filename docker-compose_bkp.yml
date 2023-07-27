@@ -1,0 +1,37 @@
+version: "3.3"
+services:
+  db:
+    image: mysql5.7
+    restart: always
+    environment:
+      - mysqlhost: localhost
+      - mysqldb: dbname
+      - mysqluser: root
+      - mysqlpassword: password
+    ports:
+      - 3306:3306
+    volumes:
+      - db: /app/db
+    networks:
+      cicdnetwork:
+        - driver: bridge
+   webapp:
+     restart: always 
+     build:
+       context: ./
+       dockerfile: Dockerfile
+     container_name: cicdcont
+     ports:
+       - 8081:8080
+     volumes:
+       - ./: /app/
+     networks:
+       - cicdnetwork
+     depends_on: db
+volumes:
+  - db
+networks:
+  cicdnetwork:
+    - driver: bridge
+
+
